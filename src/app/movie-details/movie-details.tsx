@@ -32,14 +32,16 @@ export const MovieDetails = () => {
   const trailerKey = data?.videos.results.find((video) => video.type === 'Trailer' && video.site === "YouTube")?.key;
 
   const onClose = () => {
-    navigate(pathname, { replace: true });
+    const params = new URLSearchParams(searchParams);
+    params.delete('mid');
+    navigate(`${pathname}?${params.toString()}`, { replace: true });
   }
 
   return (
-    <div>
+    <>
       <Dialog open={!!movieId}>
         <DialogContent className="max-w-screen-lg p-0 overflow-hidden" closeButton={false} onPointerDownOutside={onClose}>
-          <ScrollArea className="h-[calc(100vh-80px)]">
+          <ScrollArea className="max-h-[calc(100vh-80px)]">
             <div className="grid relative">
               <MovieTrailer backdropPath={data?.backdrop_path ?? ''} trailerKey={trailerKey ?? ""} />
               <div className="grid gap-3 p-4">
@@ -81,23 +83,25 @@ export const MovieDetails = () => {
                     </>
                   )}
                 </div>
-                <div>
-                  <h6 className="font-bold mb-1">Similar Movies</h6>
-                  <div className="grid grid-cols-6 gap-3">
-                    {data?.similar.results.slice(0, 18).map((movie) => (
-                      <CardMovie
-                        movieId={movie.id}
-                        className="w-full"
-                        key={movie.id}
-                        posterPath={movie.poster_path}
-                        title={movie.title}
-                        releaseDate={movie.release_date}
-                        genres={genres.filter((genre) => movie.genre_ids.includes(genre.id)).map((genre) => genre.name)}
-                        rate={movie.vote_average}
-                      />
-                    ))}
+                {!!data?.similar?.results?.length && (
+                  <div>
+                    <h6 className="font-bold mb-2">Similar Movies</h6>
+                    <div className="grid grid-cols-6 gap-3">
+                      {data?.similar.results.slice(0, 18).map((movie) => (
+                        <CardMovie
+                          movieId={movie.id}
+                          className="w-full"
+                          key={movie.id}
+                          posterPath={movie.poster_path}
+                          title={movie.title}
+                          releaseDate={movie.release_date}
+                          genres={genres.filter((genre) => movie.genre_ids.includes(genre.id)).map((genre) => genre.name)}
+                          rate={movie.vote_average}
+                        />
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
 
               <Button variant="outline" size="icon" className="rounded-full absolute right-4 top-4 bg-white/50 z-10" onClick={onClose}>
@@ -107,6 +111,6 @@ export const MovieDetails = () => {
           </ScrollArea>
         </DialogContent>
       </Dialog>
-    </div>
+    </>
   )
 }

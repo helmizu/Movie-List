@@ -4,7 +4,7 @@ import { MoviePoster } from './movie-poster'
 import { ClassValue } from 'clsx';
 import clsx from 'clsx';
 import moment from 'moment';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 interface CardMovieProps {
   posterPath: string;
@@ -19,10 +19,14 @@ interface CardMovieProps {
 
 export const CardMovie: React.FC<CardMovieProps> = ({ posterPath, title, className, releaseDate, genres, rate, movieId }) => {
   const { pathname } = useLocation();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
   const onClick = () => {
-    navigate(`${pathname}?mid=${movieId}`, { replace: true });
+    const params = new URLSearchParams(searchParams);
+    if (!params.has("mid")) params.append('mid', movieId.toString());
+    else params.set('mid', movieId.toString());
+    navigate(`${pathname}?${params.toString()}`, { replace: true });
   }
 
   return (
