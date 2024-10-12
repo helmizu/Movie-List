@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useQuery } from "@tanstack/react-query"
 import { movieServices } from "@/services/movie"
-import { Link } from "react-router-dom"
 import { NavLink } from "react-router-dom"
 
 export const Sidebar: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ className }) => {
